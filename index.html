@@ -9,6 +9,8 @@
 
   <div id="game" class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full text-center">
     <h1 class="text-2xl font-bold mb-4">Juego de Phrasal Verbs</h1>
+
+    <!-- Selección de Nivel -->
     <div id="level-selection" class="mb-6">
       <p class="mb-2">Elige tu nivel:</p>
       <button onclick="startGame('principiante')" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 m-1">Principiante</button>
@@ -16,9 +18,10 @@
       <button onclick="startGame('avanzado')" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 m-1">Avanzado</button>
     </div>
 
-    <div id="quiz" class="hidden">
+    <!-- Quiz -->
+    <div id="quiz" style="display: none;">
       <div class="mb-4">
-        <div id="image" class="h-32 flex items-center justify-center mb-4">
+        <div id="image" class="h-32 flex items-center justify-center mb-4 text-6xl">
           <!-- La imagen se insertará aquí -->
         </div>
         <h2 id="phrasalVerb" class="text-xl font-semibold"></h2>
@@ -29,9 +32,10 @@
       <div id="feedback" class="text-lg font-bold mb-4"></div>
     </div>
 
-    <div id="scoreboard" class="hidden">
+    <!-- Marcador Final -->
+    <div id="scoreboard" style="display: none;">
       <h2 class="text-xl font-semibold mb-2">¡Juego terminado!</h2>
-      <p id="finalScore"></p>
+      <p id="finalScore" class="mb-2"></p>
       <div id="finalEmoji" class="text-4xl mb-4"></div>
       <button onclick="restartGame()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Jugar de nuevo</button>
     </div>
@@ -40,19 +44,43 @@
   <script>
     const levels = {
       principiante: [
-        { verb: 'break down', meaning: 'averiarse', image: '🛑' },
+        { verb: 'break down', meaning: 'averiarse', image: '🚗💥' },
         { verb: 'bring up', meaning: 'mencionar', image: '🗣️' },
-        // Agrega 18 verbos más
+        { verb: 'call off', meaning: 'cancelar', image: '❌' },
+        { verb: 'find out', meaning: 'descubrir', image: '🔍' },
+        { verb: 'get along', meaning: 'llevarse bien', image: '🤝' },
+        { verb: 'give up', meaning: 'rendirse', image: '🏳️' },
+        { verb: 'look for', meaning: 'buscar', image: '👀' },
+        { verb: 'pick up', meaning: 'recoger', image: '🛍️' },
+        { verb: 'turn on', meaning: 'encender', image: '💡' },
+        { verb: 'wake up', meaning: 'despertarse', image: '⏰' },
+        // Agrega 10 verbos más
       ],
       intermedio: [
-        { verb: 'figure out', meaning: 'descifrar', image: '🕵️' },
+        { verb: 'figure out', meaning: 'descifrar', image: '🧐' },
         { verb: 'pass out', meaning: 'desmayarse', image: '😵' },
-        // Agrega 18 verbos más
+        { verb: 'carry on', meaning: 'continuar', image: '➡️' },
+        { verb: 'come across', meaning: 'encontrarse con', image: '👋' },
+        { verb: 'get over', meaning: 'superar', image: '🏆' },
+        { verb: 'let down', meaning: 'decepcionar', image: '😞' },
+        { verb: 'make up', meaning: 'inventar', image: '💡' },
+        { verb: 'run into', meaning: 'tropezar con', image: '🤕' },
+        { verb: 'take off', meaning: 'despegar', image: '✈️' },
+        { verb: 'work out', meaning: 'ejercitarse', image: '🏋️' },
+        // Agrega 10 verbos más
       ],
       avanzado: [
         { verb: 'dabble in', meaning: 'incursionar en', image: '🎨' },
         { verb: 'frown upon', meaning: 'desaprobar', image: '🙅' },
-        // Agrega 18 verbos más
+        { verb: 'brush up on', meaning: 'refrescar conocimientos', image: '📖' },
+        { verb: 'egg on', meaning: 'incitar', image: '🗣️🔥' },
+        { verb: 'iron out', meaning: 'resolver', image: '🧺' },
+        { verb: 'nail down', meaning: 'precisar', image: '📌' },
+        { verb: 'pine for', meaning: 'añorar', image: '🌲❤️' },
+        { verb: 'play down', meaning: 'restar importancia', image: '⬇️' },
+        { verb: 'zero in on', meaning: 'centrarse en', image: '🎯' },
+        { verb: 'zone out', meaning: 'desconectarse', image: '😴' },
+        // Agrega 10 verbos más
       ],
     };
 
@@ -66,9 +94,9 @@
       score = 0;
       rounds = 0;
       usedVerbs = [];
-      document.getElementById('level-selection').classList.add('hidden');
-      document.getElementById('scoreboard').classList.add('hidden');
-      document.getElementById('quiz').classList.remove('hidden');
+      document.getElementById('level-selection').style.display = 'none';
+      document.getElementById('scoreboard').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
       nextQuestion();
     }
 
@@ -79,6 +107,7 @@
       }
       rounds++;
       document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = 'text-lg font-bold mb-4';
       let availableVerbs = currentLevel.filter(item => !usedVerbs.includes(item.verb));
       let currentVerb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
       usedVerbs.push(currentVerb.verb);
@@ -120,8 +149,8 @@
     }
 
     function endGame() {
-      document.getElementById('quiz').classList.add('hidden');
-      document.getElementById('scoreboard').classList.remove('hidden');
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('scoreboard').style.display = 'block';
       document.getElementById('finalScore').textContent = `Tu puntuación final es ${score} de 10.`;
 
       const emoji = document.getElementById('finalEmoji');
@@ -137,8 +166,8 @@
     }
 
     function restartGame() {
-      document.getElementById('level-selection').classList.remove('hidden');
-      document.getElementById('scoreboard').classList.add('hidden');
+      document.getElementById('level-selection').style.display = 'block';
+      document.getElementById('scoreboard').style.display = 'none';
     }
   </script>
 

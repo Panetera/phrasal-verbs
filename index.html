@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Phrasal Verbs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-200 to-purple-200 min-h-screen flex items-center justify-center">
+
+  <div id="game" class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full text-center">
+    <h1 class="text-2xl font-bold mb-4">Juego de Phrasal Verbs</h1>
+    <div id="level-selection" class="mb-6">
+      <p class="mb-2">Elige tu nivel:</p>
+      <button onclick="startGame('principiante')" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 m-1">Principiante</button>
+      <button onclick="startGame('intermedio')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 m-1">Intermedio</button>
+      <button onclick="startGame('avanzado')" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 m-1">Avanzado</button>
+    </div>
+
+    <div id="quiz" class="hidden">
+      <div class="mb-4">
+        <div id="image" class="h-32 flex items-center justify-center mb-4">
+          <!-- La imagen se insertará aquí -->
+        </div>
+        <h2 id="phrasalVerb" class="text-xl font-semibold"></h2>
+      </div>
+      <div id="options" class="grid grid-cols-2 gap-4 mb-4">
+        <!-- Las opciones se insertarán aquí -->
+      </div>
+      <div id="feedback" class="text-lg font-bold mb-4"></div>
+    </div>
+
+    <div id="scoreboard" class="hidden">
+      <h2 class="text-xl font-semibold mb-2">¡Juego terminado!</h2>
+      <p id="finalScore"></p>
+      <div id="finalEmoji" class="text-4xl mb-4"></div>
+      <button onclick="restartGame()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Jugar de nuevo</button>
+    </div>
+  </div>
+
+  <script>
+    const levels = {
+      principiante: [
+        { verb: 'break down', meaning: 'averiarse', image: '🛑' },
+        { verb: 'bring up', meaning: 'mencionar', image: '🗣️' },
+        // Agrega 18 verbos más
+      ],
+      intermedio: [
+        { verb: 'figure out', meaning: 'descifrar', image: '🕵️' },
+        { verb: 'pass out', meaning: 'desmayarse', image: '😵' },
+        // Agrega 18 verbos más
+      ],
+      avanzado: [
+        { verb: 'dabble in', meaning: 'incursionar en', image: '🎨' },
+        { verb: 'frown upon', meaning: 'desaprobar', image: '🙅' },
+        // Agrega 18 verbos más
+      ],
+    };
+
+    let currentLevel = [];
+    let score = 0;
+    let rounds = 0;
+    let usedVerbs = [];
+
+    function startGame(level) {
+      currentLevel = [...levels[level]];
+      score = 0;
+      rounds = 0;
+      usedVerbs = [];
+      document.getElementById('level-selection').classList.add('hidden');
+      document.getElementById('scoreboard').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      if (rounds >= 10) {
+        endGame();
+        return;
+      }
+      rounds++;
+      document.getElementById('feedback').textContent = '';
+      let availableVerbs = currentLevel.filter(item => !usedVerbs.includes(item.verb));
+      let currentVerb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
+      usedVerbs.push(currentVerb.verb);
+
+      let options = [currentVerb.meaning];
+      while (options.length < 4) {
+        let randomVerb = currentLevel[Math.floor(Math.random() * currentLevel.length)];
+        if (!options.includes(randomVerb.meaning)) {
+          options.push(randomVerb.meaning);
+        }
+      }
+      options.sort(() => Math.random() - 0.5);
+
+      document.getElementById('phrasalVerb').textContent = currentVerb.verb;
+      document.getElementById('image').textContent = currentVerb.image;
+
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      options.forEach(option => {
+        let btn = document.createElement('button');
+        btn.textContent = option;
+        btn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
+        btn.onclick = () => checkAnswer(option, currentVerb.meaning);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected, correct) {
+      const feedback = document.getElementById('feedback');
+      if (selected === correct) {
+        score++;
+        feedback.textContent = '¡Correcto! 😊';
+        feedback.classList.add('text-green-600');
+      } else {
+        feedback.textContent = `Incorrecto 😢 La respuesta correcta es: "${correct}".`;
+        feedback.classList.add('text-red-600');
+      }
+      setTimeout(nextQuestion, 2000);
+    }
+
+    function endGame() {
+      document.getElementById('quiz').classList.add('hidden');
+      document.getElementById('scoreboard').classList.remove('hidden');
+      document.getElementById('finalScore').textContent = `Tu puntuación final es ${score} de 10.`;
+
+      const emoji = document.getElementById('finalEmoji');
+      let message = '';
+      if (score >= 8) {
+        message = '¡Excelente trabajo! 🎉';
+      } else if (score >= 5) {
+        message = '¡Buen intento! 😊';
+      } else {
+        message = 'Sigue practicando. 🙃';
+      }
+      emoji.textContent = message;
+    }
+
+    function restartGame() {
+      document.getElementById('level-selection').classList.remove('hidden');
+      document.getElementById('scoreboard').classList.add('hidden');
+    }
+  </script>
+
+</body>
+</html>

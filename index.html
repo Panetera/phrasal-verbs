@@ -42,6 +42,7 @@
   </div>
 
   <script>
+    // Definición de los niveles
     const levels = {
       principiante: [
         { verb: 'break down', meaning: 'averiarse', image: '🚗💥' },
@@ -54,7 +55,7 @@
         { verb: 'pick up', meaning: 'recoger', image: '🛍️' },
         { verb: 'turn on', meaning: 'encender', image: '💡' },
         { verb: 'wake up', meaning: 'despertarse', image: '⏰' },
-        // Agrega 10 verbos más
+        // Agrega más verbos si lo deseas
       ],
       intermedio: [
         { verb: 'figure out', meaning: 'descifrar', image: '🧐' },
@@ -67,7 +68,7 @@
         { verb: 'run into', meaning: 'tropezar con', image: '🤕' },
         { verb: 'take off', meaning: 'despegar', image: '✈️' },
         { verb: 'work out', meaning: 'ejercitarse', image: '🏋️' },
-        // Agrega 10 verbos más
+        // Agrega más verbos si lo deseas
       ],
       avanzado: [
         { verb: 'dabble in', meaning: 'incursionar en', image: '🎨' },
@@ -80,16 +81,18 @@
         { verb: 'play down', meaning: 'restar importancia', image: '⬇️' },
         { verb: 'zero in on', meaning: 'centrarse en', image: '🎯' },
         { verb: 'zone out', meaning: 'desconectarse', image: '😴' },
-        // Agrega 10 verbos más
+        // Agrega más verbos si lo deseas
       ],
     };
 
+    // Variables globales
     let currentLevel = [];
     let score = 0;
     let rounds = 0;
     let usedVerbs = [];
 
-    function startGame(level) {
+    // Asignamos las funciones al objeto window para hacerlas globales
+    window.startGame = function(level) {
       currentLevel = [...levels[level]];
       score = 0;
       rounds = 0;
@@ -100,14 +103,15 @@
       nextQuestion();
     }
 
-    function nextQuestion() {
-      if (rounds >= 10) {
+    window.nextQuestion = function() {
+      if (rounds >= 10 || usedVerbs.length >= currentLevel.length) {
         endGame();
         return;
       }
       rounds++;
       document.getElementById('feedback').textContent = '';
       document.getElementById('feedback').className = 'text-lg font-bold mb-4';
+
       let availableVerbs = currentLevel.filter(item => !usedVerbs.includes(item.verb));
       let currentVerb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
       usedVerbs.push(currentVerb.verb);
@@ -135,7 +139,7 @@
       });
     }
 
-    function checkAnswer(selected, correct) {
+    window.checkAnswer = function(selected, correct) {
       const feedback = document.getElementById('feedback');
       if (selected === correct) {
         score++;
@@ -148,10 +152,10 @@
       setTimeout(nextQuestion, 2000);
     }
 
-    function endGame() {
+    window.endGame = function() {
       document.getElementById('quiz').style.display = 'none';
       document.getElementById('scoreboard').style.display = 'block';
-      document.getElementById('finalScore').textContent = `Tu puntuación final es ${score} de 10.`;
+      document.getElementById('finalScore').textContent = `Tu puntuación final es ${score} de ${rounds}.`;
 
       const emoji = document.getElementById('finalEmoji');
       let message = '';
@@ -165,9 +169,10 @@
       emoji.textContent = message;
     }
 
-    function restartGame() {
+    window.restartGame = function() {
       document.getElementById('level-selection').style.display = 'block';
       document.getElementById('scoreboard').style.display = 'none';
+      document.getElementById('quiz').style.display = 'none';
     }
   </script>
 
